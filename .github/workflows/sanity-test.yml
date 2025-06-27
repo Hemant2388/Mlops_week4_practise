@@ -27,7 +27,7 @@ jobs:
           pytest tests/ --junitxml=reports/results.xml > reports/output.txt
 
       - name: Setup CML
-        uses: iterative/cml@v1
+        uses: iterative/cml@latest
 
       - name: Post test results as comment
         env:
