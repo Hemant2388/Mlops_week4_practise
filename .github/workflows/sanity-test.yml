@@ -1,0 +1,36 @@
+name: Sanity Test with CML
+
+on:
+  pull_request:
+
+jobs:
+  test-model:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest
+
+      - name: Run sanity test
+        run: |
+          mkdir -p reports
+          pytest tests/ --junitxml=reports/results.xml > reports/output.txt
+
+      - name: Post test results as comment using CML
+        uses: iterative/cml@v1
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "## ✅ Sanity Test Report" > report.md
+          cat reports/output.txt >> report.md
+          cml comment create report.md
