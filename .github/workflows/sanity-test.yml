@@ -26,11 +26,14 @@ jobs:
           mkdir -p reports
           pytest tests/ --junitxml=reports/results.xml > reports/output.txt
 
-      - name: Post test results as comment using CML
+      - name: Setup CML
         uses: iterative/cml@v1
+
+      - name: Post test results as comment
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "## ✅ Sanity Test Report" > report.md
           cat reports/output.txt >> report.md
           cml comment create report.md
+
