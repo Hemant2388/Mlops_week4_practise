@@ -11,6 +11,7 @@ def test_model_prediction():
     
     prediction = model.predict(test_sample)
     
-    print("Predicted species:", prediction[0])  # 👈 This will show output
+    with open("prediction_output.txt", "w") as f:
+        f.write(f"✅ Predicted species: {prediction[0]}\n")
     
     assert prediction[0] in ['setosa', 'versicolor', 'virginica']
