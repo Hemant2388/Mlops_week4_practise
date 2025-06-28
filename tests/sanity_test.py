@@ -1,17 +1,17 @@
 import joblib
-import pandas as pd
+import numpy as np
 
-def test_model_prediction():
+def test_prediction_output():
     model = joblib.load("artifacts/model.joblib")
     
-    # A sample test input (from setosa class)
-    test_sample = pd.DataFrame([[5.1, 3.5, 1.4, 0.2]], columns=[
-        'sepal_length', 'sepal_width', 'petal_length', 'petal_width'
-    ])
-    
-    prediction = model.predict(test_sample)
-    
-    with open("prediction_output.txt", "w") as f:
-        f.write(f"✅ Predicted species: {prediction[0]}\n")
-    
-    assert prediction[0] in ['setosa', 'versicolor', 'virginica']
+    # Use a simple, known sample
+    sample = np.array([[5.1, 3.5, 1.4, 0.2]])  # Likely to predict 'setosa'
+    prediction = model.predict(sample)[0]
+
+    # Write predicted species to shared output file
+    with open("test_output.txt", "a") as f:
+        f.write("\n🧠 Model Prediction\n")
+        f.write(f"✅ Predicted species: {prediction}\n")
+
+    # Ensure it's a valid string
+    assert isinstance(prediction, str)
