@@ -1,4 +1,4 @@
-name: Sanity test
+name: Run Iris ML Tests with CML
 
 on:
   pull_request:
@@ -13,20 +13,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-python@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
-      - uses: iterative/setup-cml@v2
-
-      - name: Run unit tests
+      - name: Install Dependencies
         run: |
           pip install -r requirements.txt
-          python -m pytest tests/ > test_output.txt
 
-      - name: Create CML report
+      - name: Run Unit, Eval & Data Tests
+        run: |
+          echo "" > test_output.txt
+          python -m pytest tests/ >> test_output.txt
+
+      - name: Post CML Report
+        uses: iterative/setup-cml@v2
+
+      - name: Create CML PR Comment
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -34,7 +41,5 @@ jobs:
           echo '```' >> report.md
           cat test_output.txt >> report.md
           echo '```' >> report.md
-          echo "" >> report.md
-          echo "### 🧠 Model Prediction" >> report.md
-          cat prediction_output.txt >> report.md
           cml comment create --publish report.md
+
